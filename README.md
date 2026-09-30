@@ -1,4 +1,6 @@
-# Fake-Mic Voice Testing with Playwright
+# voice-bot-automation
+
+**Fake-mic voice testing with Playwright.**
 
 Automated testing of voice-driven web apps **without a human speaking**.
 
@@ -100,7 +102,7 @@ Most real voice bots stream audio via `getUserMedia` + WebRTC/WebSocket, so they
 ## Project structure
 
 ```
-fake-mic-voice-testing/
+voice-bot-automation/
 ├── pom.xml                         # Java 21, Playwright (+ TestNG as runner)
 ├── testng.xml                      # Suite definition
 └── src/test/java/com/qa/fakemic/

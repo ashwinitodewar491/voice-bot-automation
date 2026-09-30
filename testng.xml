@@ -1,5 +1,5 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
-<suite name="Fake Mic Voice Testing">
+<suite name="Voice Bot Automation">
     <test name="Whisper Web">
         <classes>
             <class name="com.qa.fakemic.tests.WhisperWebTranscriptionTest"/>
