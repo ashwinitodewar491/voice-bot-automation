@@ -19,7 +19,7 @@ flowchart LR
     C --> D["Chromium launched with<br/>--use-file-for-fake-audio-capture=query.wav"]
     D --> E["Web page calls getUserMedia()<br/>and receives the WAV as 'mic' audio"]
     E --> F["Site transcribes / responds"]
-    F --> G["TestNG assertion<br/>transcript contains expected words"]
+    F --> G["Playwright assertThat<br/>transcript contains expected words"]
     G --> H["WAV deleted"]
 ```
 
@@ -53,14 +53,19 @@ browser launches, **each query gets its own browser**.
 1. Open Whisper Web → **Record** → **Start Recording**
 2. Wait for exactly the WAV's duration (one play-through), then **Stop Recording** → **Load**
 3. **Transcribe Audio**. The first time, the browser downloads the Whisper model (~40 MB)
-4. Click the site's own **Export TXT** and capture the download. That gives the exact transcript,
-   with no fragile DOM scraping
+4. Locate the transcript row (`00:00 Purple elephants dance on the moon.`) and wait for it to appear
 5. Assert that the transcript **contains the key words**, not an exact string (see below)
+
+The test case uses **only Playwright's API**, in three parts:
+- role-based locators, e.g. `page.getByRole(AriaRole.BUTTON, …setName("Record"))`
+- Playwright's web-first assertions (`PlaywrightAssertions.assertThat(locator).containsText(…)`),
+  which retry automatically until they pass or time out, so no manual sleeps or polling are needed
+- TestNG only as the runner. Playwright for Java ships without its own runner, so TestNG supplies
+  `@Test`, `@DataProvider` and `@AfterMethod`
 
 ### Step 4 — Clean up
 
 `@AfterMethod(alwaysRun = true)` closes the browser and deletes the WAV, even when the test fails.
-A separate test (`generatedVoiceFileIsDeletedAfterUse`) checks that deletion really works.
 
 ---
 
@@ -96,7 +101,7 @@ Most real voice bots stream audio via `getUserMedia` + WebRTC/WebSocket, so they
 
 ```
 fake-mic-voice-testing/
-├── pom.xml                         # Java 21, Playwright, TestNG
+├── pom.xml                         # Java 21, Playwright (+ TestNG as runner)
 ├── testng.xml                      # Suite definition
 └── src/test/java/com/qa/fakemic/
     ├── tts/VoiceQueryGenerator.java     # text → WAV (edge-tts + ffmpeg), duration, delete
