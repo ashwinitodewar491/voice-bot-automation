@@ -1,0 +1,6 @@
+target/
+*.wav
+*.mp3
+.idea/
+*.iml
+.vscode/
